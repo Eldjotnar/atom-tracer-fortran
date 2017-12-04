@@ -1,0 +1,4 @@
+languageName: Fortran
+fileExtension: .f90
+#runCommand: gfortran [file] && ./a.out #gfortran [file] || #replaces [file] with the filepath
+runCommand: gfortran [file]
