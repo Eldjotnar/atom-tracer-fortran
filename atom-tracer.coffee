@@ -73,9 +73,10 @@ module.exports = AtomTracer =
         infoData = YAML.parse(fs.readFileSync(infoPath, {encoding:'utf-8'}))
         if(!infoData) #Failed to parse
           continue
-        parseData = {language:infoData.languageName,runCommand:infoData.runCommand}
+        parseData = {language:infoData.languageName,runCommand:infoData.runCommand,parseCommand:infoData.parseCommand}
         #Get the parse file
-        parsePath = Path.join(__dirname,"langs",folder,"parse"+infoData.fileExtension)
+        #parsePath = Path.join(__dirname,"langs",folder,"parse"+infoData.fileExtension)
+        parsePath = Path.join(__dirname,"langs",folder,"parse"+infoData.parseExtension)
         if !fs.lstatSync(parsePath).isFile()
           atom.notifications.addError("Missing config file." ,{detail:"Found language '" + folder + "' but could not find parse file. Expected: " + parsePath})
         parseData['parseScript'] = parsePath
@@ -133,11 +134,11 @@ module.exports = AtomTracer =
 
     parseData = @parseScripts[fileType]
     #If found, please call the parse script to check if it's a real variable
-    if(parseData.language == "Fortran")
-      fileString = parseData.parseScript.replace(/(.*\/).*/g,"$1") #leads to the working directory for generating scripts
-      command = parseData.runCommand.replace("[file]",parseData.parseScript) + " -o " + fileString + "output" + " && echo \\\"" + filePath + "\\\" \"" + varName + "\" " + line + " | ." + fileString + "output"
-    else
-      command = parseData.runCommand.replace("[file]",parseData.parseScript) + " \"" + filePath + "\" \"" + varName + "\" " + line
+    #if(parseData.language == "Fortran")
+    #  fileString = parseData.parseScript.replace(/(.*\/).*/g,"$1") #leads to the working directory for generating scripts
+    #  command = parseData.runCommand.replace("[file]",parseData.parseScript) + " -o " + fileString + "output" + " && echo \\\"" + filePath + "\\\" \"" + varName + "\" " + line + " | ." + fileString + "output"
+    #else
+    command = parseData.parseCommand.replace("[file]",parseData.parseScript) + " \"" + filePath + "\" \"" + varName + "\" " + line
     child_process.exec(command, (error, stdout, stderr) ->
       #If all good, send the scope info the inject
       if(error || stderr)
