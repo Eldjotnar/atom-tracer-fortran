@@ -1,3 +1,5 @@
 languageName: Python
 fileExtension: .py
 runCommand: python3 [file] #replaces [file] with the filepath
+parseExtension: .py
+parseCommand: python3 [file]

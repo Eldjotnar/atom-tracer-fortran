@@ -81,7 +81,7 @@ module.exports = AtomTracer =
           atom.notifications.addError("Missing config file." ,{detail:"Found language '" + folder + "' but could not find parse file. Expected: " + parsePath})
         parseData['parseScript'] = parsePath
         #Get the inject file
-        injectPath = Path.join(__dirname,"langs",folder,"inject"+infoData.fileExtension)
+        injectPath = Path.join(__dirname,"langs",folder,"inject"+infoData.parseExtension)
         if !fs.lstatSync(parsePath).isFile()
           atom.notifications.addError("Missing config file." ,{detail:"Found language '" + folder + "' but could not find inject file. Expected: " + injectPath})
         parseData['injectScript'] = injectPath
@@ -155,7 +155,8 @@ module.exports = AtomTracer =
         return
 
       #Run the inject script if no error
-      command = parseData.runCommand.replace("[file]",parseData.injectScript) + " \"" + filePath + "\" " + varName + " " + btoa(JSON.stringify(scopeInfo))
+      fileString = parseData.parseScript.replace(/(.*\/).*/g,"$1")
+      command = parseData.parseCommand.replace("[file]",parseData.injectScript) + " \"" + filePath + "\" " + varName + " " + btoa(JSON.stringify(scopeInfo)) + " \"" + fileString + "\""
       child_process.exec(command, (error, stdout, stderr ) ->
         if(error || stderr)
           atom.notifications.addError("Injection failed!", {dismissable:DismissableErrors,detail: error || stderr})
