@@ -1,0 +1,9 @@
+languageName: Fortran
+fileExtension:
+              - .f90
+              - .f95
+              - .f03
+              - .f08
+runCommand: gfortran [file]
+parseExtension: .py
+parseCommand: python [file]
