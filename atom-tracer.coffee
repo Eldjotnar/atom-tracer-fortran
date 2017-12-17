@@ -12,33 +12,24 @@ In order to be flexible enough to support any language, this atom plugin
 is little more than a UI. It mainly handles passing in user selections
 to the relevant scripts, and displays them in the editor. It looks for these
 language scripts inside lib/langs/
-
 Every language should have a "parse" and an "inject" script, as well as an
 info.yml file.
-
 **parse**: [filepath variable_name line_number]
 Takes in these arguments (line_number is the line at which this variable was
 found, which may or may not be the same line where it was declared) and prints
 a json string to stdout in this format:
-
 {scope:{start:[num],end:[num]},decl:{line:[num]}}
-
 If there is a compilation error with the error, it should return:
-
 {error:[error_string]}
-
 **inject**: [filepath variable_name scope]
 Takes in these arguments (scope is what is returned above) and injects print/cout
 statements every line into a new copy. Runs that copy, deletes that file, and captures
 the output, parses it into stdout and prints it out. (Can also just edit the same file if necessary)
 The output should look like this:
-
 [{line:[num],output:[str]},...]
-
 **info.yml**:
 This has some meta data about the language, such as which filetypes to look for,
 the name of that language.
-
 ###
 
 module.exports = AtomTracer =
@@ -87,7 +78,8 @@ module.exports = AtomTracer =
         parseData['injectScript'] = injectPath
 
         if('parseScript' of parseData && 'injectScript' of parseData)
-          moduleRef.parseScripts[infoData.fileExtension] = parseData
+          for extension in infoData.fileExtension
+            moduleRef.parseScripts[extension] = parseData
           console.log(moduleRef.parseScripts)
 
 
@@ -134,10 +126,6 @@ module.exports = AtomTracer =
 
     parseData = @parseScripts[fileType]
     #If found, please call the parse script to check if it's a real variable
-    #if(parseData.language == "Fortran")
-    #  fileString = parseData.parseScript.replace(/(.*\/).*/g,"$1") #leads to the working directory for generating scripts
-    #  command = parseData.runCommand.replace("[file]",parseData.parseScript) + " -o " + fileString + "output" + " && echo \\\"" + filePath + "\\\" \"" + varName + "\" " + line + " | ." + fileString + "output"
-    #else
     command = parseData.parseCommand.replace("[file]",parseData.parseScript) + " \"" + filePath + "\" \"" + varName + "\" " + line
     child_process.exec(command, (error, stdout, stderr) ->
       #If all good, send the scope info the inject
@@ -156,13 +144,14 @@ module.exports = AtomTracer =
 
       #Run the inject script if no error
       fileString = parseData.parseScript.replace(/(.*\/).*/g,"$1")
-      command = parseData.parseCommand.replace("[file]",parseData.injectScript) + " \"" + filePath + "\" " + varName + " " + btoa(JSON.stringify(scopeInfo)) + " \"" + fileString + "\""
+      command = parseData.parseCommand.replace("[file]",parseData.injectScript) + " \"" + filePath + "\" " + varName + " " + btoa(JSON.stringify(scopeInfo))
       child_process.exec(command, (error, stdout, stderr ) ->
         if(error || stderr)
           atom.notifications.addError("Injection failed!", {dismissable:DismissableErrors,detail: error || stderr})
           return
         #Try to parse the output
         try
+          console.log(stdout)
           traceData = JSON.parse(stdout)
           #Show where the variable was declared
           moduleRef.createResult("<code>`"+varName + "` declared here.</code>",scopeInfo.decl.line)
