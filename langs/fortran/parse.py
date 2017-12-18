@@ -21,7 +21,6 @@ def Parse():
 						var_decl = cnt+1
 						var_start = cnt+1
 					var_end = cnt+1
-				#print word + " " + str(cnt)
 
 		scopeData = {'scope':{
 		'start':var_start,

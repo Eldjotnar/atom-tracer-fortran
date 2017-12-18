@@ -66,7 +66,6 @@ module.exports = AtomTracer =
           continue
         parseData = {language:infoData.languageName,runCommand:infoData.runCommand,parseCommand:infoData.parseCommand}
         #Get the parse file
-        #parsePath = Path.join(__dirname,"langs",folder,"parse"+infoData.fileExtension)
         parsePath = Path.join(__dirname,"langs",folder,"parse"+infoData.parseExtension)
         if !fs.lstatSync(parsePath).isFile()
           atom.notifications.addError("Missing config file." ,{detail:"Found language '" + folder + "' but could not find parse file. Expected: " + parsePath})
@@ -143,7 +142,6 @@ module.exports = AtomTracer =
         return
 
       #Run the inject script if no error
-      fileString = parseData.parseScript.replace(/(.*\/).*/g,"$1")
       command = parseData.parseCommand.replace("[file]",parseData.injectScript) + " \"" + filePath + "\" " + varName + " " + btoa(JSON.stringify(scopeInfo))
       child_process.exec(command, (error, stdout, stderr ) ->
         if(error || stderr)
@@ -151,7 +149,6 @@ module.exports = AtomTracer =
           return
         #Try to parse the output
         try
-          console.log(stdout)
           traceData = JSON.parse(stdout)
           #Show where the variable was declared
           moduleRef.createResult("<code>`"+varName + "` declared here.</code>",scopeInfo.decl.line)
