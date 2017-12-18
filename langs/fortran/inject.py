@@ -73,8 +73,8 @@ def Inject():
             pass
 
 	#delete temp file
-	#os.remove(tempFile)
-	#os.remove(rawPath + "/temp_output")
+	os.remove(tempFile)
+	os.remove(rawPath + "/temp_output")
     print(json.dumps(cleanOutput))
 
 Inject()
