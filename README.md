@@ -1,6 +1,6 @@
 # Atomic Tracer
 
-A language agnostic Atom package for tracing variables inline!
+A language agnostic Atom package for tracing variables inline! 
 
 It shows you where a variable was declared and its value at each line thereafter:
 
@@ -14,7 +14,11 @@ It also works on function arguments:
 
 ![funcexample](https://raw.githubusercontent.com/OmarShehata/atom-tracer/master/_images/tracer_func.gif)
 
-Currently only Python is supported, but you can help out and add more languages without having to touch any of the core plugin code!
+The tracer originally supported only Python, but it now supports Fortran 90, 95, 2003, and 2008 (and soon C++ hopefully)!
+
+# About My Work
+
+This project was created by Omar Shehata, a fellow student of mine at St. Olaf, for tracing variables in python. For my Programming Languages Class (Fall '17), I elected to expand and optimize it to support Fortran, and work more efficiently.  
 
 # Installation
 
@@ -25,6 +29,8 @@ Then install the tracer from your Atom settings, or through `apm`:
 ```
 apm install atom-tracer
 ```
+
+If you plan on tracing Fortran in atom, it's probably a good idea to install a [syntax-highlighting package](https://atom.io/packages/language-fortran).
 
 # Usage
 
@@ -47,9 +53,3 @@ It parses the abstract syntax tree to find where the variable is declared and wh
 If you want more details, see this [page](HowItWorks.md)!
 
 This is built on top of the awesome [Ink](https://github.com/JunoLab/atom-ink) package!
-
-# Contributions are very welcome!
-
-There are two ways to contribute. The easiest way is to use the plugin on your own code and see if it works. If you're getting an error on a piece of code, or it's just not doing what you expect, please open an issue and paste your code snippet to recreate it! Or just generally suggest features/ideas!
-
-The other way is to create a new language! We want to support as many languages as possible. Check out this [guide](HowItWorks.md) on how the tracer works to extend it.
